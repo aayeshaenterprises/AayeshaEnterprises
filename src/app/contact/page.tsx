@@ -27,22 +27,22 @@ export default function ContactPage() {
       <p className="text-muted-foreground text-lg max-w-3xl mx-auto text-center mb-16">
         Have a project in mind? Get in touch with us for a free consultation and quote.
       </p>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Contact Info */}
         <div className="space-y-8">
           <h2 className="text-2xl font-bold font-heading mb-6">Our Contact Details</h2>
-          
+
           <div className="flex items-start gap-4">
             <div className="bg-primary/10 p-4 rounded-full text-primary">
               <MapPin className="w-6 h-6" />
             </div>
             <div>
               <h3 className="font-semibold text-lg">Workshop Address</h3>
-              <p className="text-muted-foreground">123 Industrial Area, Phase 1<br/>City Name, State 123456</p>
+              <p className="text-muted-foreground">123 Industrial Area, Phase 1<br />City Name, State 123456</p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-4">
             <div className="bg-primary/10 p-4 rounded-full text-primary">
               <Phone className="w-6 h-6" />
@@ -52,7 +52,7 @@ export default function ContactPage() {
               <p className="text-muted-foreground">+91 98765 43210</p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-4">
             <div className="bg-primary/10 p-4 rounded-full text-primary">
               <Mail className="w-6 h-6" />
@@ -75,47 +75,47 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">Your Name</label>
-                <input 
-                  type="text" 
-                  id="name" 
+                <input
+                  type="text"
+                  id="name"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50" 
-                  placeholder="John Doe" 
+                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  placeholder="Enter Your Name"
                 />
               </div>
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone Number</label>
-                <input 
-                  type="tel" 
-                  id="phone" 
+                <input
+                  type="tel"
+                  id="phone" min-length={10} max-length={10}
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50" 
-                  placeholder="+91 98765 43210" 
+                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  placeholder="+91 98765 43210"
                 />
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium mb-1">Message / Requirements</label>
-                <textarea 
-                  id="message" 
-                  rows={4} 
+                <textarea
+                  id="message"
+                  rows={4}
                   required
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50" 
+                  className="w-full bg-background border border-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50"
                   placeholder="Tell us about your project..."
                 />
               </div>
-              
+
               {status === "error" && (
                 <div className="text-red-500 text-sm">Failed to send message. Please try again.</div>
               )}
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 disabled={status === "submitting"}
                 className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold rounded-lg px-4 py-3 hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
