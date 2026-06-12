@@ -1,22 +1,27 @@
 import { NextResponse } from 'next/server';
-import admin from 'firebase-admin';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getMessaging } from 'firebase-admin/messaging';
 import path from 'path';
+import fs from 'fs';
 
 // Initialize Firebase Admin if not already initialized
-if (!admin.apps.length) {
+if (getApps().length === 0) {
   try {
     if (process.env.FIREBASE_SERVICE_ACCOUNT) {
       // Vercel deployment: Read from Environment Variable
       const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
+      initializeApp({
+        credential: cert(serviceAccount)
       });
     } else {
       // Local development fallback
-      const serviceAccountPath = path.join(process.cwd(), 'service-account.json');
-      admin.initializeApp({
-        credential: admin.credential.cert(require(serviceAccountPath))
-      });
+      const serviceAccountPath = path.join(process.cwd(), 'service-account.json.json');
+      if (fs.existsSync(serviceAccountPath)) {
+        const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+        initializeApp({
+          credential: cert(serviceAccount)
+        });
+      }
     }
   } catch (error) {
     console.error('Firebase admin initialization error', error);
@@ -39,7 +44,7 @@ export async function POST(req: Request) {
       tokens, // Sends to multiple devices at once
     };
 
-    const response = await admin.messaging().sendEachForMulticast(message);
+    const response = await getMessaging().sendEachForMulticast(message);
     
     return NextResponse.json({ 
       success: true, 
