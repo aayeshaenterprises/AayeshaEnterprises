@@ -145,22 +145,25 @@ export function MediaLightbox({ media, isOpen, onClose }: MediaLightboxProps) {
 
   const handleDownload = async () => {
     if (isDownloading) return;
+    setIsDownloading(true);
+    
     try {
-      setIsDownloading(true);
-      const response = await fetch(media.url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
+      // Cloudinary allows forcing a download by adding 'fl_attachment' to the URL
+      let downloadUrl = media.url;
+      if (downloadUrl.includes('/upload/')) {
+        downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+      }
+
       const link = document.createElement("a");
-      link.href = blobUrl;
+      link.href = downloadUrl;
       link.download = `Aayesha_Media_${Date.now()}`;
+      // In case it doesn't auto-download, open in new tab
+      link.target = "_blank";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("Download failed:", error);
-      // Fallback
-      window.open(media.url, "_blank");
     } finally {
       setIsDownloading(false);
     }
