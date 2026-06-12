@@ -41,14 +41,15 @@ export default function ServicesPage() {
           </div>
         ) : (
           services.map((service) => (
-            <div key={service.id} className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg transition-all group cursor-pointer flex flex-col">
-              <div className="relative aspect-[4/3] bg-muted">
+            <div key={service.id} className="bg-card/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group cursor-pointer flex flex-col relative">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none" />
+              <div className="relative aspect-[4/3] bg-muted overflow-hidden">
                 {service.imageUrl ? (
                   <Image 
                     src={service.imageUrl} 
                     alt={service.title} 
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                     unoptimized
                   />
                 ) : (

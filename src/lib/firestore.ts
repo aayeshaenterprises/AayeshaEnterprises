@@ -118,3 +118,31 @@ export async function submitContactForm(data: { name: string; phone: string; mes
     return { success: false, error };
   }
 }
+
+export async function sendAdminPushNotification(title: string, body: string) {
+  try {
+    const tokensSnapshot = await getDocs(collection(db, "devices"));
+    const pushTokens = tokensSnapshot.docs.map(doc => doc.data().pushToken).filter(Boolean);
+
+    if (pushTokens.length > 0) {
+      await fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          pushTokens.map(token => ({
+            to: token,
+            sound: "default",
+            title,
+            body,
+          }))
+        ),
+      });
+    }
+  } catch (error) {
+    console.error("Error sending push notification:", error);
+  }
+}

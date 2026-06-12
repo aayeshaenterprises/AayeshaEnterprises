@@ -33,36 +33,36 @@ export default function GalleryPage() {
         A closer look at our craftsmanship and attention to detail.
       </p>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {loading ? (
           [1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="aspect-square bg-muted rounded-xl animate-pulse" />
+            <div key={i} className="aspect-square bg-muted rounded-2xl animate-pulse border border-white/5" />
           ))
         ) : items.length === 0 ? (
           <div className="col-span-full py-12 text-center text-muted-foreground">
-            No media uploaded yet.
+            No gallery items added yet.
           </div>
         ) : (
           items.map((item) => (
             <div 
               key={item.id} 
-              className="relative aspect-square rounded-xl overflow-hidden bg-muted group cursor-pointer shadow-sm hover:shadow-xl transition-all"
+              className="relative aspect-square rounded-2xl overflow-hidden bg-muted group cursor-pointer shadow-lg hover:shadow-primary/20 border border-white/5 hover:border-primary/50 transition-all duration-300"
               onClick={() => setSelectedMedia({ url: item.url, type: item.type, cloudinaryId: item.cloudinaryId })}
             >
               {item.type === 'image' ? (
                 <Image 
                   src={item.url} 
-                  alt="Gallery Item" 
+                  alt="Gallery image" 
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  unoptimized // Bypassing next/image domains restriction since it's cloudinary
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  unoptimized
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800 text-white">
-                  <PlayCircle className="w-16 h-16 opacity-80" />
-                  <span className="mt-2 text-sm font-medium opacity-80">Video</span>
+                <div className="w-full h-full flex items-center justify-center bg-slate-900">
+                  <PlayCircle className="w-16 h-16 text-white/80 group-hover:scale-125 transition-transform duration-500" />
                 </div>
               )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
           ))
         )}

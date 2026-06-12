@@ -61,29 +61,29 @@ export default function ProjectsPage() {
               )}
               
               {project.mediaFiles && project.mediaFiles.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {project.mediaFiles.map((media: any, index: number) => {
                     const isVideo = media.url.includes(".mp4") || media.url.includes(".mov");
                     return (
                       <div 
                         key={index} 
-                        className="relative aspect-video rounded-xl overflow-hidden bg-muted group cursor-pointer shadow-sm hover:shadow-xl transition-all"
+                        className="relative aspect-video rounded-2xl overflow-hidden bg-muted group cursor-pointer shadow-lg hover:shadow-primary/20 border border-white/5 hover:border-primary/50 transition-all duration-300"
                         onClick={() => setSelectedMedia({ url: media.url, type: isVideo ? "video" : "image", cloudinaryId: media.cloudinaryId })}
                       >
                         {isVideo ? (
                           <div className="w-full h-full flex items-center justify-center bg-slate-900">
-                            <PlayCircle className="w-12 h-12 text-white/80 group-hover:scale-110 transition-transform" />
+                            <PlayCircle className="w-14 h-14 text-white/80 group-hover:scale-125 transition-transform duration-500" />
                           </div>
                         ) : (
                           <Image 
                             src={media.url} 
                             alt={`${project.heading} media ${index + 1}`}
                             fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
                             unoptimized
                           />
                         )}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                     );
                   })}
