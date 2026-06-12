@@ -1,4 +1,28 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import Image from "next/image";
+
 export default function ServicesPage() {
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, "services"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setServices(data);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-24">
       <h1 className="text-4xl font-heading font-bold mb-6">Our Services</h1>
@@ -6,10 +30,42 @@ export default function ServicesPage() {
         We offer a wide range of steel fabrication and welding services to meet your needs.
       </p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-48 bg-muted rounded-xl animate-pulse" />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {loading ? (
+          [1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="aspect-[4/3] bg-muted rounded-xl animate-pulse" />
+          ))
+        ) : services.length === 0 ? (
+          <div className="col-span-full py-12 text-center text-muted-foreground">
+            No services added yet.
+          </div>
+        ) : (
+          services.map((service) => (
+            <div key={service.id} className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg transition-all group cursor-pointer flex flex-col">
+              <div className="relative aspect-[4/3] bg-muted">
+                {service.imageUrl ? (
+                  <Image 
+                    src={service.imageUrl} 
+                    alt={service.title} 
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white opacity-50">
+                    No Image
+                  </div>
+                )}
+              </div>
+              <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-2xl font-bold font-heading mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
+                <p className="text-muted-foreground leading-relaxed flex-1">
+                  {service.description}
+                </p>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

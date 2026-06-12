@@ -86,6 +86,32 @@ export async function submitContactForm(data: { name: string; phone: string; mes
       read: false,
       createdAt: serverTimestamp()
     });
+
+    // Fetch admin push tokens
+    const tokensSnapshot = await getDocs(collection(db, "devices"));
+    const pushTokens = tokensSnapshot.docs.map(doc => doc.data().pushToken).filter(Boolean);
+
+    // Send push notification to all admins
+    if (pushTokens.length > 0) {
+      await fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          pushTokens.map(token => ({
+            to: token,
+            sound: "default",
+            title: "New Website Inquiry! 🚀",
+            body: `${data.name} sent a message: "${data.message.substring(0, 50)}..."`,
+            data: { route: "messages" },
+          }))
+        ),
+      }).catch(err => console.error("Push notification error:", err));
+    }
+
     return { success: true, id: docRef.id };
   } catch (error) {
     console.error("Error submitting contact form:", error);
