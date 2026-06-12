@@ -5,10 +5,12 @@ import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { PlayCircle } from "lucide-react";
 import Image from "next/image";
+import { MediaLightbox } from "@/components/ui/MediaLightbox";
 
 export default function GalleryPage() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMedia, setSelectedMedia] = useState<{ url: string; type?: "image" | "video"; cloudinaryId?: string } | null>(null);
 
   useEffect(() => {
     const q = query(collection(db, "gallery"), orderBy("uploadedAt", "desc"));
@@ -42,7 +44,11 @@ export default function GalleryPage() {
           </div>
         ) : (
           items.map((item) => (
-            <div key={item.id} className="relative aspect-square rounded-xl overflow-hidden bg-muted group">
+            <div 
+              key={item.id} 
+              className="relative aspect-square rounded-xl overflow-hidden bg-muted group cursor-pointer shadow-sm hover:shadow-xl transition-all"
+              onClick={() => setSelectedMedia({ url: item.url, type: item.type, cloudinaryId: item.cloudinaryId })}
+            >
               {item.type === 'image' ? (
                 <Image 
                   src={item.url} 
@@ -61,6 +67,12 @@ export default function GalleryPage() {
           ))
         )}
       </div>
+
+      <MediaLightbox 
+        media={selectedMedia!} 
+        isOpen={!!selectedMedia} 
+        onClose={() => setSelectedMedia(null)} 
+      />
     </div>
   );
 }
