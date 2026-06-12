@@ -87,30 +87,11 @@ export async function submitContactForm(data: { name: string; phone: string; mes
       createdAt: serverTimestamp()
     });
 
-    // Fetch admin push tokens
-    const tokensSnapshot = await getDocs(collection(db, "devices"));
-    const pushTokens = tokensSnapshot.docs.map(doc => doc.data().pushToken).filter(Boolean);
-
-    // Send push notification to all admins
-    if (pushTokens.length > 0) {
-      await fetch("https://exp.host/--/api/v2/push/send", {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Accept-encoding": "gzip, deflate",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          pushTokens.map(token => ({
-            to: token,
-            sound: "default",
-            title: "New Website Inquiry! 🚀",
-            body: `${data.name} sent a message: "${data.message.substring(0, 50)}..."`,
-            data: { route: "messages" },
-          }))
-        ),
-      }).catch(err => console.error("Push notification error:", err));
-    }
+    // Send push notification to all admins using FCM via Next.js API
+    await sendAdminPushNotification(
+      "New Website Inquiry! 🚀", 
+      `${data.name} sent a message: "${data.message.substring(0, 50)}..."`
+    );
 
     return { success: true, id: docRef.id };
   } catch (error) {
@@ -125,21 +106,16 @@ export async function sendAdminPushNotification(title: string, body: string) {
     const pushTokens = tokensSnapshot.docs.map(doc => doc.data().pushToken).filter(Boolean);
 
     if (pushTokens.length > 0) {
-      await fetch("https://exp.host/--/api/v2/push/send", {
+      await fetch("/api/send-notification", {
         method: "POST",
         headers: {
-          "Accept": "application/json",
-          "Accept-encoding": "gzip, deflate",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(
-          pushTokens.map(token => ({
-            to: token,
-            sound: "default",
-            title,
-            body,
-          }))
-        ),
+        body: JSON.stringify({
+          tokens: pushTokens,
+          title,
+          body
+        }),
       });
     }
   } catch (error) {
