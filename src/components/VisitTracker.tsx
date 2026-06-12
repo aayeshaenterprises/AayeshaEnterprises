@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { db } from "@/lib/firestore";
+import { db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
 
 export function VisitTracker() {
