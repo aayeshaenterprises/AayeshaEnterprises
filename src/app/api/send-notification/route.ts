@@ -41,6 +41,11 @@ export async function POST(req: Request) {
         title,
         body
       },
+      android: {
+        notification: {
+          channelId: 'default',
+        }
+      },
       tokens, // Sends to multiple devices at once
     };
 
